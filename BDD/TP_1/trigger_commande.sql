@@ -1,4 +1,5 @@
 drop trigger if exists stock_trigger on contient;
+drop trigger if exists hist_trigger on stocke;
 
 CREATE OR REPLACE FUNCTION verif_stock() 
 RETURNS TRIGGER AS
@@ -42,3 +43,43 @@ BEFORE INSERT
 ON contient
 FOR EACH ROW
 EXECUTE PROCEDURE verif_stock();
+
+
+CREATE OR REPLACE FUNCTION update_hist()
+RETURNS trigger AS
+$$
+    DECLARE
+        minPrix numeric;
+        nomMagasin text;
+        villeMagasin text;
+        idProduit int;
+        libelleProduit text;
+        prixUnitaire numeric;
+        quantiteProduit int;
+    BEGIN
+        SELECT min(prixUnit) INTO minPrix FROM stocke WHERE idpro = NEW.idpro;
+        IF NEW.prixUnit = minPrix THEN
+            SELECT nom, ville, idpro, libelle, prixUnit, quantite 
+            INTO nomMagasin, villeMagasin, idProduit, libelleProduit, prixUnitaire, quantiteProduit 
+            FROM stocke 
+            NATURAL JOIN magasin 
+            NATURAL JOIN produit
+            WHERE stocke.idpro = NEW.idpro
+            AND stocke.prixUnit = minPrix;
+            RAISE NOTICE 'Le produit % est le moins cher dans le magasin "% à %.', libelleProduit, nomMagasin, villeMagasin;
+            RAISE NOTICE 'Prix : %€, Quantité : %', prixUnitaire, quantiteProduit;
+            RAISE NOTICE 'Référence du produit : %', idProduit;
+        END IF;
+
+        INSERT INTO historiquePrix (idmag, idpro, ancienPrix, nouveauPrix) 
+        VALUES (NEW.idmag, NEW.idpro, OLD.prixUnit, NEW.prixUnit);
+        RETURN NEW;
+    END;
+$$ language plpgsql;
+
+
+CREATE TRIGGER hist_trigger
+AFTER UPDATE of prixUnit
+ON stocke
+FOR EACH ROW
+EXECUTE PROCEDURE update_hist();

@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS stocke CASCADE;
 DROP TABLE IF EXISTS contient CASCADE;
 DROP TABLE IF EXISTS facture CASCADE;
 DROP TABLE IF EXISTS fidelite CASCADE;
+DROP TABLE IF EXISTS historiquePrix CASCADE;
 
 CREATE TABLE magasin(
 	idmag serial primary key,
@@ -57,6 +58,15 @@ CREATE TABLE fidelite (
 	numcli int REFERENCES client(numcli),
 	idmag int REFERENCES magasin(idmag),
 	UNIQUE(numcli,idmag)
+);
+
+CREATE TABLE historiquePrix (
+	log_id serial PRIMARY KEY,
+	dateChange date default now(),
+	idmag int REFERENCES magasin(idmag),
+	idpro int REFERENCES produit(idpro),
+	ancienPrix numeric(5,2),
+	nouveauPrix numeric(5,2)
 );
 
 
