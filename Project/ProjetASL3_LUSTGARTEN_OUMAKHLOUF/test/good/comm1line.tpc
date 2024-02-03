@@ -1,0 +1,8 @@
+int main(void) {
+
+    // Commentaire sur une ligne
+    
+    return 0;
+}
+
+// Commentaire en dehors

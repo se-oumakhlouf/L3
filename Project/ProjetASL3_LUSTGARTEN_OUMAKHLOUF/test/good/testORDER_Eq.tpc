@@ -1,0 +1,9 @@
+int main(void) {
+    int w, z;
+    z = 3;
+
+    if (z <= 8) w = 1000;
+    if (w >= 7) return;
+}
+
+

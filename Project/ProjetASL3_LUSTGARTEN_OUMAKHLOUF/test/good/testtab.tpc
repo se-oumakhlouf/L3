@@ -1,0 +1,12 @@
+int main(int oui[]) {
+
+    int x[5];
+    int y;
+
+    y = 7;
+    x[0] = 3;
+
+    x[0] = x[y - 2 * 2];
+
+    return 0;
+}

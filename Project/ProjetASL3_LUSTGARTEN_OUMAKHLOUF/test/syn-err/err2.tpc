@@ -1,0 +1,6 @@
+int main(void) {
+    int x;
+    x == 4; // error
+
+    return 0;
+}

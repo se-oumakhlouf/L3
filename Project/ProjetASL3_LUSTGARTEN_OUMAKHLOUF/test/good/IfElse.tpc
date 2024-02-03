@@ -1,0 +1,14 @@
+int main(void) {
+
+    int i;
+    int j;
+
+    i = 12;
+    j = 5;
+    if (i == 7) {
+        return;
+    } else {
+        return;
+    }
+
+}

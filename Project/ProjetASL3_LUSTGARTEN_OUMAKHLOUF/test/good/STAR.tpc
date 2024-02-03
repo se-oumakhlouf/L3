@@ -1,0 +1,7 @@
+int main(void) {
+    int w;
+
+    w = 2 * 2;
+    w = 2 * 2 * 4;
+}
+
