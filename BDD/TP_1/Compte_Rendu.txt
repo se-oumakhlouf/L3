@@ -1,0 +1,19 @@
+Exercice 1 : 
+
+	1 -
+	
+	supprimer : drop trigger stock_trigger on contient;	
+	activer : alter table contient enable trigger stock_trigger;
+	desactiver : alter table contient disable trigger stock_trigger;
+
+	
+	2 - 
+	Avant insertion dans contient
+	Pour chaque ligne dans la table :
+		- le trigger indique à quel magasin correspond la facture,
+		- indique si le produit correspondant à la ligne est disponible dans le magasin
+				et renvoie null (l'insertion n'a pas lieu)
+		- renvoie la nouvelle ligne
+		
+	Après tests on observe, l'insertion marche lorsque la quantité ajouter est supérieure 
+	à la quantité disponible.
