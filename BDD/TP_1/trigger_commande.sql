@@ -49,12 +49,12 @@ CREATE OR REPLACE FUNCTION update_hist()
 RETURNS trigger AS
 $$
     DECLARE
-        minPrix numeric;
-        nomMagasin text;
-        villeMagasin text;
+        minPrix numeric(5, 2);
+        nomMagasin varchar(25);
+        villeMagasin varchar(25);
         idProduit int;
-        libelleProduit text;
-        prixUnitaire numeric;
+        libelleProduit varchar(25);
+        prixUnitaire numeric(5, 2);
         quantiteProduit int;
     BEGIN
         SELECT min(prixUnit) INTO minPrix FROM stocke WHERE idpro = NEW.idpro;
