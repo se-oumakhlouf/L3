@@ -1,0 +1,100 @@
+    Commande                        Résultat
+
+########## Partie a ##########   
+
+:type 1                     1           :: Num p => p
+
+:type 1 :: Int              1::Int      :: Int
+
+:type 1 :: Integer          1::Int      :: Integer
+
+:type 1 :: Float            1::Float    :: Float
+
+:type 1 :: Double           1::Double   :: Double
+
+:type 1.0                   1.0         :: Fractional p => p
+
+:type 1.0 :: Int            <interactive>:1:1: error:
+                                • No instance for (Fractional Int) arising from the literal ‘1.0’
+                                • In the expression: 1.0 :: Int
+
+:type 1.0 :: Integer        <interactive>:1:1: error:
+                                • No instance for (Fractional Integer) arising from the literal ‘1.0’
+                                • In the expression: 1.0 :: Integer
+
+:type 1.0 :: Float          1.0::Float  :: Float
+
+:type 1.0 :: Double         1.0::Double :: Double
+
+########## Partie b ##########  
+
+21 + 2                      23
+
+(+) 21 2                    23
+
+21 + 2 * 3                  27
+
+(+) 21 (2 * 3)              27
+
+(+) 21 ((*) 2 3)            27
+
+1 == 2                      False
+
+1 /= 2                      True        ( '/=' signifie 'différent de' )
+
+1 + (-1)                    0
+
+div 11 2                    5
+
+11 `div` 2                  5
+
+42 `mod` 2 == 0             True
+
+even 42                     True
+
+odd 42                      False
+
+pred 42                     41
+
+succ 42                     43
+
+########## Partie b ########## 
+
+:type 'a'                   'a'             :: Char
+
+:type "abc"                 "abc"           :: [Char]
+
+:type []                    []              :: [a]
+
+:type ['a']                 ['a']           :: [Char]
+
+:type ['a', 'b']            ['a', 'b']      :: [Char]
+
+:type ["abc", "def"]        ["abc", "def"]  :: [[Char]]
+
+:type ['a', "abc"]          <interactive>:1:7: error:
+                                • Couldn't match expected type ‘Char’ with actual type ‘[Char]’
+                                • In the expression: "abc"
+                                In the expression: ['a', "abc"]
+
+:type ('a', 'b')            ('a', 'b')      :: (Char, Char)
+
+:type ('a', "abc")          ('a', "abc")    :: (Char, [Char])
+
+:type ('a', "abc", 1)       ('a', "abc", 1) :: Num c => (Char, [Char], c)
+
+:type [odd, even]           [odd, even] :: Integral a => [a -> Bool]
+
+:type [odd, even, (==) 1]   [odd, even, (==) 1] :: Integral a => [a -> Bool]
+
+:type [odd, even, mod]      <interactive>:1:13: error:
+                                • Couldn't match type ‘a -> a’ with ‘Bool’
+                                Expected type: a -> Bool
+                                    Actual type: a -> a -> a
+                                • Probable cause: ‘mod’ is applied to too few arguments
+                                In the expression: mod
+                                In the expression: [odd, even, mod]
+
+:type (odd, even, mod)      (odd, even, mod)
+                                :: (Integral a1, Integral a2, Integral a3) =>
+                                    (a1 -> Bool, a2 -> Bool, a3 -> a3 -> a3)

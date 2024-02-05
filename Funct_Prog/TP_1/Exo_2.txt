@@ -1,0 +1,35 @@
+########## Partie a ##########  
+
+Commande                                
+    > Résultat
+
+let x = 1 in let x = 2 in x                 
+    > 2
+
+let x = 1; y = x in let x = 3 in x + y
+    > 4
+
+let x = 1; y = x; z = x + y in let x = 3; y = 2*x in (x, y, z)
+    > (3, 6, 2)
+
+let x = y + 1; y = x + 2 in (x, y)
+    > (boucle / récursion infinie)
+
+let x = x * x in x
+    > (boucle / récursion infinie)
+
+let x = x * x in let x = 1 in x
+    > 1
+
+let x = 1 in let x = x * x in x
+    > (boucle / récursion infinie)
+
+########## Partie b ##########  
+
+(LAISON LOCALE SUR R ?)
+airDisque h r = let aire = pi * r * r in aire 
+(utilisation : airDisque 10 5
+                    > 78.53
+)
+
+########## Partie c ########## 
