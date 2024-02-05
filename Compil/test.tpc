@@ -1,0 +1,11 @@
+int a;
+char c;
+
+int function(void) {
+    return 1;
+}
+
+int main(void) {
+    int w;
+    return 1;
+}
