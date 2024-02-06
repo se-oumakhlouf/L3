@@ -33,3 +33,14 @@ cylinder r h =
     in sideArea + 2 * topArea
 
 ########## Partie c ########## 
+
+-- p : perimetre = 2 * pi * r
+-- s : surface totale = 2 * d + p * h
+-- v : volume = d * h
+
+triplet :: Floating b => b -> b -> b -> (b, b, b) 
+triplet h r d = 
+    let p = 2 * pi * r; 
+        s = 2 * d + p * h; 
+        v = d * h 
+    in (p, s, v)
