@@ -68,7 +68,7 @@ succ 42                     43
 
 :type ['a']                 ['a']           :: [Char]
 
-:type ['a', 'b']            ['a', 'b']      :: [Char]
+:type ['a', 'b']        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    ['a', 'b']      :: [Char]
 
 :type ["abc", "def"]        ["abc", "def"]  :: [[Char]]
 

@@ -26,10 +26,10 @@ let x = 1 in let x = x * x in x
 
 ########## Partie b ##########  
 
-(LAISON LOCALE SUR R ?)
-airDisque h r = let aire = pi * r * r in aire 
-(utilisation : airDisque 10 5
-                    > 78.53
-)
+cylinder :: (RealFloat a) => a -> a -> a
+cylinder r h =
+    let sideArea = 2 * pi * r * h
+        topArea = pi * r²
+    in sideArea + 2 * topArea
 
 ########## Partie c ########## 
