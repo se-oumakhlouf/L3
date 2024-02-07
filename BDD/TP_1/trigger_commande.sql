@@ -1,5 +1,6 @@
 drop trigger if exists stock_trigger on contient;
 drop trigger if exists hist_trigger on stocke;
+drop trigger if exists fidelite_trigger on contient;
 
 CREATE OR REPLACE FUNCTION verif_stock() 
 RETURNS TRIGGER AS
@@ -45,6 +46,8 @@ FOR EACH ROW
 EXECUTE PROCEDURE verif_stock();
 
 
+-- Exercice 2
+
 CREATE OR REPLACE FUNCTION update_hist()
 RETURNS trigger AS
 $$
@@ -83,3 +86,41 @@ AFTER UPDATE of prixUnit
 ON stocke
 FOR EACH ROW
 EXECUTE PROCEDURE update_hist();
+
+
+-- Exercice 3
+
+/*
+CREATE OR REPLACE FUNCTION fidelite()
+RETURNS trigger AS
+$$
+
+    DECLARE
+        client int;  mag varchar(25); 
+        prixU numeric(5, 2); quant int;
+    BEGIN
+        -- Changement dans le stock d'un magasin
+        SELECT quantite from contient
+        where idpro = NEW.idpro and idmag = NEW.idmag;
+        RAISE NOTICE 'ici';
+        if OLD.quantite != NEW.quantite then
+            -- 
+            SELECT numcli, idmag, prixUnit, quantite
+            into client, mag, prixU, quant
+            from contient natural join facture
+            where idpro = NEW.idpro and idmag = NEW.idmag;
+            RAISE NOTICE 'Client : %, Magasin : %, Prix : %', client, mag, prixU * quant;
+        end if;
+
+        INSERT INTO fidelite (points, numcli, idmag)
+        VALUES (quant * prixU, client, mag);
+       
+        RETURN NEW;
+    END;
+$$ language plpgsql;
+
+CREATE TRIGGER fidelite_trigger
+AFTER UPDATE ON contient
+FOR EACH ROW
+EXECUTE PROCEDURE fidelite();
+*/
