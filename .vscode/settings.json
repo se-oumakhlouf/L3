@@ -22,6 +22,7 @@
         "__locale": "c",
         "fcntl.h": "c",
         "cstdlib": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "stdlib.h": "c"
     }
 }

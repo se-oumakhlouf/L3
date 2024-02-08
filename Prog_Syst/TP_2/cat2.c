@@ -17,7 +17,7 @@ void process_file(char* file_name) {
         try(write(STDOUT_FILENO, buff, n), -1);                     // write to stdout | STDOUT_FILENO = 1
     }
 
-    if (file_name) {close(fd);}                                     // close file
+    if (file_name) {close(fd);}                                                                              // close file
 }
 
 int main(int argc, char *argv[]) {
