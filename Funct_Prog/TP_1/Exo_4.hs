@@ -42,3 +42,42 @@ myFact :: Int -> Int
 myFact n
     | n == 0 = 1
     | otherwise = n * myFact(n - 1)
+
+
+-- ########## Partie f ##########
+
+myFact2 :: Integer -> Integer
+myFact2 n
+    | n == 0 = 1
+    | otherwise = n * myFact2(n - 1)
+
+
+-- ########## Partie g ##########
+
+myGCDEuclid :: Int -> Int -> Int
+myGCDEuclid x y
+    | x == y        = x
+    | x > y         = myGCDEuclid (x - y) y
+    | otherwise     = myGCDEuclid (y - x) x -- y > x
+
+
+-- ########## Partie h ##########
+
+myGCDEuclidean :: Int -> Int -> Int
+myGCDEuclidean x y
+    | y == 0    = x
+    | otherwise = myGCDEuclidean y (div x y)
+
+
+-- ########## Partie i ##########
+
+myAverage2 :: Int -> Int -> Int -> Float
+myAverage2 a b c = fromIntegral (a + b + c) / 3
+
+
+-- ########## Partie j ##########
+
+detectZero :: (Int -> Int) -> Int -> Int
+detectZero fct x
+  | fct x == 0 = x
+  | otherwise  = detectZero fct (succ(x))
