@@ -20,6 +20,8 @@
         "symbols_table.h": "c",
         "try.h": "c",
         "__locale": "c",
-        "fcntl.h": "c"
+        "fcntl.h": "c",
+        "cstdlib": "c",
+        "unistd.h": "c"
     }
 }
