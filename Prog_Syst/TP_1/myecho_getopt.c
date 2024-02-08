@@ -6,35 +6,38 @@
 int main(int argc, char * argv[]) {
     extern char *optarg;
     extern int optind;
+    struct 
+    {
+        char *sep;
+        char *end;
+    } cfg = {" ", "\n"};
     int opt;
-    char separator[10] = " ";
-    char fin[10] = "\n";
 
     while((opt = getopt(argc, argv, "snS:")) != -1) {
         switch (opt)
         {
         case 's':
-            strcpy(separator, "");
+            cfg.sep = "";
             break;
         case 'n':
-            strcpy(fin, "");
+            cfg.end = "";
             break;
         case 'S':
-            strcpy(separator, optarg);
+            cfg.sep = optarg;
             break;
         default:
-            fprintf(stderr, "Invalid option : %s\nUsage: %s letters [-S separator] [-n] [-s] letters\n", argv[optind - 1], argv[0]);
+            fprintf(stderr, "Usage: %s [-S STRING] [-n] [-s]\n", argv[0]);
             exit(EXIT_FAILURE);
             break;
         }
     }
 
-
-    for (int i = optind; i < argc - 1; i ++) {
-        printf("%s%s", argv[i], separator);
+    char *sep = "";
+    for (char **argp = argv + optind; *argp; argp++) {
+        printf("%s%s", sep, *argp);
+        sep = cfg.sep;
     }
-    printf("%s%s", argv[argc - 1], fin);
-    
+    printf("%s", cfg.end);
 
     return 0;
 }

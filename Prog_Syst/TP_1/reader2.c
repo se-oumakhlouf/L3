@@ -3,6 +3,7 @@
 int main(int argc, char * argv[]) {
 
     setbuf(stdin, NULL);
+    setbuf(stdout, NULL);
 
     for (int c; c != EOF; c = fgetc(stdin)) {
         fputc(c, stdout);
