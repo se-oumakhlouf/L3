@@ -1,3 +1,5 @@
+/* cat.c */
+
 #include "../../try.h"
 #include <unistd.h>
 

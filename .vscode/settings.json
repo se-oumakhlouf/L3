@@ -19,6 +19,7 @@
         "vector": "c",
         "symbols_table.h": "c",
         "try.h": "c",
-        "__locale": "c"
+        "__locale": "c",
+        "fcntl.h": "c"
     }
 }
