@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "try.h"
+#include "../../try.h"
 
 int main(int argc, char * argv[]) {
 
