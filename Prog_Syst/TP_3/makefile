@@ -5,12 +5,15 @@
 CC=gcc
 CFLAGS= -Wall -g
 
-all: ls
+all: ls ls_rec
 
 ls: ls.c
 	$(CC) $(CFLAGS) -o $@ $<
 
+ls_rec: ls_rec.c
+	$(CC) $(CFLAGS) -o $@ $<
+
 clean:
-	rm -f ls
+	rm -f ls ls_rec
 
 re: clean all
