@@ -9,7 +9,7 @@
 void process_path(char* pathname) {
     struct stat buf;
     int size;
-    char* restrict readbuf;
+    char* restrict readbuf = NULL;
     try(lstat(pathname, &buf), -1);
     printf("Inode number: %ld\n", buf.st_ino);
     printf("File size: %ld\n", buf.st_size);
@@ -24,9 +24,9 @@ void process_path(char* pathname) {
         readbuf[size] = '\0';
         printf("Linked to : %s\n", readbuf);
         process_path(readbuf);
-        free(readbuf);
     }
     else                                printf("?\n");
+    free(readbuf);
     
 }
 
