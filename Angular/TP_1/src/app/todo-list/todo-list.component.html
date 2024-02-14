@@ -1,0 +1,16 @@
+<ul>
+  <li
+    *ngFor="let todo of todos"
+    [ngClass]="{ 'line-over-text': todo.done === true }"
+    (click)="toggleDone(todo)"
+  >
+    {{ todo.label }}
+  </li>
+</ul>
+
+<input
+  type="text"
+  placeholder="Ajouter une tâche"
+  [(ngModel)]="newTaskLabel"
+  (keyup.enter)="addTask()"
+/>
