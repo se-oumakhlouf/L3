@@ -14,6 +14,7 @@ struct Config
     char *sep;
     int minusL;
     int minusN;
+    int minus1;
 };
 
 void process_dir(char* pathname, struct Config cfg);
@@ -36,14 +37,14 @@ void write_information(struct stat buf, struct Config cfg, char* pathname) {
         printf("%6o ", buf.st_mode);
         struct tm *time = localtime(&buf.st_mtime);
         write_user(buf, cfg);
-        printf("%6lu", buf.st_size);
+        printf("%8lu", buf.st_size);
         char month[4]; // Pour stocker le nom abrégé du mois (3 caractères + caractère nul)
         strftime(month, sizeof(month), "%b", time);
-        printf("%2d %3s %2d:%2d ", time->tm_mday, month, time->tm_hour, time->tm_min);
+        printf(" %2d %3s %2d:%2d ", time->tm_mday, month, time->tm_hour, time->tm_min);
         printf("%s\n", pathname);
     }
 
-    else {printf("Path : %s \n", pathname); }
+    // else if (cfg.minus1) printf("Path : %s \n", pathname);
 
     if (cfg.full) {
         printf("Inode number: %ld\n", buf.st_ino);
@@ -119,6 +120,7 @@ int main(int argc, char* argv[]) {
             break;
         case '1':
             cfg.sep = "\n";
+            cfg.minus1 = 1;
             break;
         case 'l':   // name in char* (ls -l)
             cfg.minusL = 1;
@@ -137,10 +139,11 @@ int main(int argc, char* argv[]) {
         process_dir(".", cfg);
     } else {
         for (char** argp = argv + optind; *argp; argp++) {
-            if (is_file(*argp))           process_path(*argp, cfg);
+            if (is_file(*argp))           {printf("%s", *argp); process_path(*argp, cfg);}
             else if (is_directory(*argp)) process_dir(*argp, cfg);
         }
     }
+    if (!cfg.minus1) printf("\n");
 
     exit(EXIT_SUCCESS);
 }
