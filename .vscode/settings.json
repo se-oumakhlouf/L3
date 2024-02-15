@@ -23,6 +23,9 @@
         "fcntl.h": "c",
         "cstdlib": "c",
         "unistd.h": "c",
-        "stdlib.h": "c"
-    }
+        "stdlib.h": "c",
+        "stat.h": "c",
+        "chrono": "c"
+    },
+    "cmake.configureOnOpen": false
 }
