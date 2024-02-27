@@ -78,6 +78,7 @@ dropWhile1 p (x : xs)
     | otherwise = x : xs
 
 -- dropWhile2 with foldl
+-- dropWhile2 :: (a -> Bool) -> [a] -> [a]
 
 
 zipWith1 :: (a -> b -> c) -> [a] -> [b] -> [c]
@@ -86,6 +87,8 @@ zipWith1 _ _ [] = []
 zipWith1 f (x : xs) (y:ys) = f x y:zipWith1 f xs ys
 
 -- zipWith2 using high order functions
+zipWith2 :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith2 f xs ys = map (uncurry f) (zip xs ys)
 
 
 reverse1 :: [a] -> [a]
@@ -93,11 +96,7 @@ reverse1 [] = []
 reverse1 (x : xs) = reverse1 xs ++ [x]
 
 reverse2 :: [a] -> [a]
-reverse2 (x : xs) = foldl (\acc x -> x : acc) [] xs
+reverse2 = foldl (\acc x -> x : acc) []
 
-{-
-
-    Does not work
-    reverse3 :: [a] -> [a]
-    reverse3 (x : xs) = foldr (\x acc -> x : acc) [] xs
--}
+reverse3 :: [a] -> [a]
+reverse3 xs = foldr (\x acc -> acc ++ [x]) [] xs
