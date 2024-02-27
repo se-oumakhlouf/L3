@@ -1,4 +1,4 @@
-import qualified Data.List as List
+import Data.List
 
 elem' :: (Foldable t, Eq a) => a -> t a -> Bool
 elem' x = foldr (\y acc -> y == x || acc) False
@@ -24,9 +24,7 @@ map3 f = foldr (\x acc -> f x : acc) []
     
 -}
 
--- reverse is applied at the same time as the fold
--- reverse is in O(n) and fold is in O(n)
--- map4 is in O(2n) -> O(n)
+-- map4 is in O(n²)
 map4 :: (a -> b) -> [a] -> [b]
 map4 f = reverse . foldl (\acc x -> f x : acc) []
 
@@ -71,3 +69,35 @@ takeWhile1 p (x : xs)
 
 takeWhile2 :: (a -> Bool) -> [a] -> [a]
 takeWhile2 p = foldr (\x acc -> if p x then x : acc else []) []
+
+
+dropWhile1 :: (a -> Bool) -> [a] -> [a]
+dropWhile1 _ [] = []
+dropWhile1 p (x : xs)
+    | p x = dropWhile1 p xs
+    | otherwise = x : xs
+
+-- dropWhile2 with foldl
+
+
+zipWith1 :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith1 _ [] _ = []
+zipWith1 _ _ [] = []
+zipWith1 f (x : xs) (y:ys) = f x y:zipWith1 f xs ys
+
+-- zipWith2 using high order functions
+
+
+reverse1 :: [a] -> [a]
+reverse1 [] = []
+reverse1 (x : xs) = reverse1 xs ++ [x]
+
+reverse2 :: [a] -> [a]
+reverse2 (x : xs) = foldl (\acc x -> x : acc) [] xs
+
+{-
+
+    Does not work
+    reverse3 :: [a] -> [a]
+    reverse3 (x : xs) = foldr (\x acc -> x : acc) [] xs
+-}
