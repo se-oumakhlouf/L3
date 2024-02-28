@@ -13,3 +13,6 @@ map' f = unfold null (f . head) tail
 
 iterate' :: (a -> a) -> a -> [a]
 iterate' f = unfold (const False) id f
+
+
+-- altMap :: (a -> b) -> (a -> b) -> [a] -> [b]
