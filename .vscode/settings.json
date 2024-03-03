@@ -27,5 +27,8 @@
         "stat.h": "c",
         "chrono": "c"
     },
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "python.analysis.extraPaths": [
+        "./Graphe"
+    ]
 }
