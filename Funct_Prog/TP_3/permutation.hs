@@ -1,7 +1,8 @@
 import Data.List
 
 distrib :: a -> [a] -> [[a]]
-distrib x xs = [ take i xs ++ [x] ++ drop i xs | i <- [0..length xs] ]
+distrib x [] = [[x]]
+distrib x (y : ys) = (x:y:ys) : map (y:) (distrib x ys)
 
 permutations1 :: [a] -> [[a]]
 permutations1 [] = [[]]
