@@ -50,9 +50,6 @@ INSERT INTO demande(jid,pid) VALUES
 
 /*
 
-			READ COMMITTED
-
-
 		Question 1 : 
 
 	Admin: 	. Compte
@@ -67,10 +64,12 @@ INSERT INTO demande(jid,pid) VALUES
 	Admin: 	. Ferme
 
 	En repeatable read l'erreur ne persiste pas
+		ERREUR:  n'a pas pu sérialiser un accès à cause d'une mise à jour en parallèle
+	Même chose en serializable
 
 
 
-	Question 2 : 
+		Question 2 : 
 
 	Joueur:	. Vérifie que la partie est 'ouverte'
 			. Demande à rejoindre
@@ -83,5 +82,57 @@ INSERT INTO demande(jid,pid) VALUES
 			. Change l'état de la partie en 'annulé'
 	Joueur:	. Demande à rejoindre la partie
 
+	Erreur non reconnue en repeatable read
 
+	Serializable : ERREUR:  n'a pas pu sérialiser un accès à cause des dépendances de lecture/écriture
+
+
+
+		Question 3 :
+
+	Admin1:	. Vérifie que la partie est 'ouverte'
+			. Change l'état de la partie en 'fermé' 
+			. Vvlide les demandes
+	Admin2:	. Verifie que la partie est 'ouverte'
+			. Change l'état de la partie en 'annulé'
+			. Refuse les demandes en attentes
+
+	On obtient une partie annulée avec des demandes validées si
+	Admin1:	. Vérifie que la partie est 'ouverte'
+	Admin2:	. Vérifie que la partie est 'ouverte'
+			. Change l'état de la partie en 'fermée'
+			. Valide les demandes
+	Admin1:	. Change l'état de la partie en 'anulée'
+			. Refuse les demandes en attentes
+
+
+	repeatable read : 	ERREUR:  n'a pas pu sérialiser un accès à cause d'une mise à jour en parallèle
+						ERREUR:  la transaction est annulée, les commandes sont ignorées jusqu'à la fin du bloc de la transaction
+
+
+
+		Question 4 :
+
+	Joueur1:	. Vérifie que la partie est 'ouverte'
+				. Demande à rejoindre la partie
+				. commit
+	Joueur2:	. Vérifie que la partie est ouverte
+				. Demande à rejoindre la partie
+				. commit
+	Admin:		. Vérifie l'état de la partie
+				. Valide la partie
+				. Annule les demandes en attentes
+
+	On obtient une demande est refusée alors qu’elle a une date plus ancienne qu’une demande acceptée pour la même partie si
+	Joueur1:	. Vérifie que la partie est ouverte
+				. Demande à rejoindre la partie
+	Joueur2:	. Vérifie que la partie est ouverte 
+				. Demande à rejoindre la partie
+				. commit
+	Admin:		. Vérifie l'état de la partie
+				. Valide la partie
+				. Valide les 4 premières demandes
+	Joueur1:	. Commit
+	Admin:		. Annule les demandes en attentes
+	
 */
