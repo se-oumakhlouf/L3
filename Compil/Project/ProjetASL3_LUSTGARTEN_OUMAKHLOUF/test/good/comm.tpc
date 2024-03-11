@@ -1,0 +1,13 @@
+int main(void) {
+
+    /* 
+        Commentaire
+            sur 
+                plusieurs 
+                    lignes 
+                        */
+    
+    return 0;
+}
+
+/* Commentaire en dehors */

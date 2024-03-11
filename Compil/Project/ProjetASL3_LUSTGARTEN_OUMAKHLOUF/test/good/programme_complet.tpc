@@ -1,0 +1,44 @@
+// Ceci est un programme de test permettant de vérifier nos règles
+
+int x;
+char c;
+
+/* Renvoie le double de la valeur passé en arguments */
+int double(int n) {
+    return n * 2;
+}
+
+/* Fonction qui je sert
+    à
+        rien */
+void ne_fait_rien(char c, int tab[], int unNombre) {}
+
+
+int main(void) {
+
+    char babaIsYou;
+    char keke;
+    int tab[10]; // tableau de taille 10
+    int number;
+    int div_test;
+
+    x = 2;
+    c = '*';
+    babaIsYou = '\'';
+    keke = 'b';
+    number = 2 * 2;
+    div_test = x / 1;
+    tab[2 * 3] = 3; 
+
+    if (number == 4) {
+        if (x > 0 || div_test <= x) {
+            while (x < 3) x = x + 1;
+        } else {
+            number = 122 % 11;
+        }
+    }
+
+    if (number == 4 && x != 8 && x >= 2) c = 'V';
+
+    return 0; 
+}

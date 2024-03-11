@@ -1,0 +1,3 @@
+void oui_le_2(char a, char b){
+    return  // error missing ";"
+}

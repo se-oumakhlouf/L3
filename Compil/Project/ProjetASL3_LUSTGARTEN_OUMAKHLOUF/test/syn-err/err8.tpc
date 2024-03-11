@@ -1,0 +1,1 @@
+int main(int) {} // error : manque un IDENT après int

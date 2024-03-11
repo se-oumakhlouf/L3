@@ -1,0 +1,9 @@
+int double (int a,
+            int b,   int c,   char name, char ok) 
+{
+    return            a *      2;
+}
+
+int main(void) {
+    return 0;
+}

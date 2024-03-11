@@ -1,0 +1,6 @@
+int main(void) {
+    int x;
+    int w;
+    x = 2;
+    w = x % 1;
+}
