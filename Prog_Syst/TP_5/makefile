@@ -16,6 +16,10 @@ runner: runner.c
 exo3: pipe.c
 	$(CC) $(CFLAGS) -o $@ $<
 
+exo4: toupper10.c
+	$(CC) $(CFLAGS) -o $@ $<
+	
+
 clean: 
 	rm -f exo? runner
 
