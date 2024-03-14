@@ -35,10 +35,10 @@ def profondeur(G, depart):
                 if not visites[v]:
                     a_traiter.append(v)
                     parents[v] = u
-                if parents[v] != False:
-                    Arbre.ajouter_aretes([(v, u)])
+    for v in G.sommets():
+        if parents[v] != False:
+            Arbre.ajouter_aretes([(v, u)])
 
-    #return resultat
     return Arbre
 
 Arbre = profondeur(G, 'A')
@@ -62,10 +62,10 @@ def largeur(G, depart):
                     a_traiter.insert(0, v)
                 if not parents[v]:
                     parents[v] = u
-                if parents[v] != False:
-                    Arbre.ajouter_aretes([(v, u)])
+    for v in G.sommets():
+        if parents[v] != False:
+            Arbre.ajouter_aretes([(v, u)])
 
-    #return resultat
     return Arbre
 
 Arbre = largeur(G, 'A')
