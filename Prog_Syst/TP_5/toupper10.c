@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "../try.h"
+#include "../../try.h"
 
 void handleSIGCHLD(int sig) {
   _exit(EXIT_SUCCESS);
