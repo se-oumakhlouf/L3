@@ -127,3 +127,8 @@ rightmostBSTree (Node lt x rt) = rightmostBSTree rt
 
 maxBSTree :: BSTree a -> Maybe a
 maxBSTree = rightmostBSTree
+
+
+-- deleteRootBSTree :: Ord a => a -> BSTree a -> BSTree a
+-- deleteRootBSTree (Node lt x rt) =
+--  mergreBSTree (mergeBSTree (fromListBSTree [minBSTree rt]) rt) lt
