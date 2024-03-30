@@ -337,7 +337,6 @@ int main(int argc, char* argv[]){
     }
     error = yyparse();
     if (treeOption && !error) printTree(arbre);
-    // if (!error) deleteTree(arbre); (not needed here) (or look BISON destructor)
     return error;
 }
 
