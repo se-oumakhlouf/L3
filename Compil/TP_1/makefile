@@ -3,7 +3,7 @@
 # $< : the first current prerequisite
 
 CC=gcc
-CFLAGS= -Wall -g
+CFLAGS= -Wall -g -fsanitize=leak
 
 all : Symbols_Table
 
