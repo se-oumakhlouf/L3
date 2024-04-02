@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "Symbols_Table.h"
-#include "../../try.h"
+#include "../../../try.h"
 
 // using try might be a bad idea, stops the program if malloc fails
 
