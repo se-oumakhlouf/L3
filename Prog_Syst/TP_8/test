@@ -1,0 +1,194 @@
+#!/bin/sh
+
+# This script assumes that the tested shell does the following things
+# when in non-interactive mode (i.e., when its stdin is NOT a terminal):
+#  - deactivate job control
+#  - not write the prompt to stdout (either to stderr or not at all)
+
+if [ "$#" -lt 1 ]; then
+    echo >&2 "Usage: $0 <shell binary> [shell options]"
+    exit 1
+fi
+
+for file in _test_ _testok_ _testprog_; do
+    if [ -e "$file" ]; then
+        echo >&2 "Error: file $file already exists"
+        echo >&2 "(Delete or rename it, then rerun the test script)"
+        exit 1
+    fi
+done
+
+maxtime=0.5s # Kill the tested shell after this time
+
+# ANSI escape sequences
+normal="\033[0m"
+bold="\033[1m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+
+# printu: print unformatted
+printu() {
+    printf "%s" "$*"
+}
+
+# splitlines: replace every “\\” by a newline
+splitlines() {
+    sed 's/[ ]*\\\\[ ]*/\n/g'
+}
+
+failed=0
+passed=0
+
+# Tests based on standard output
+while read title && read -r shellInput && read -r expOutput; do
+    read separator # ignored
+    rm -f _test_
+    shellInput="$(printu "$shellInput" | splitlines)"
+    expOutput="$(printu "$expOutput" | splitlines)"
+    actOutput="$(printu "$shellInput" | timeout -s KILL $maxtime $* 2>/dev/null)"
+    if [ "$actOutput" != "$expOutput" ]; then
+        failed=$(($failed + 1))
+        printf "${bold}${yellow}== Test $(($failed + $passed)) ($title): "
+        printf "${bold}${red}failed\n"
+        printf "${normal}${yellow}-- Shell input\n"
+        printf "${normal}%s\n" "$shellInput"
+        printf "${normal}${yellow}-- Expected output\n"
+        printf "${normal}%s\n" "$expOutput"
+        printf "${normal}${yellow}-- Actual output\n"
+        printf "${normal}%s\n" "$actOutput"
+    else
+        passed=$(($passed + 1))
+    fi
+done <<'EOF' # each test: (1) title, (2) shell input, (3) expected output, (4) --
+    Single command
+    echo first second third
+    first second third
+    --
+    Multiple commands
+    echo first \\ echo second \\ echo third
+    first \\ second \\ third
+    --
+    First command empty
+    \\ echo second \\ echo third
+    second \\ third
+    --
+    Quoted arguments
+    printf "1: %s, 2: %s, 3: %s" first 'the second one' third
+    1: first, 2: the second one, 3: third
+    --
+    Change directory
+    cd /usr/bin \\ pwd
+    /usr/bin
+    --
+    Early exit
+    echo "Before exit" \\ exit \\ echo "After exit"
+    Before exit
+    --
+    Slow foreground job
+    sh -c 'sleep 0.1; echo Foreground 1' \\ echo Foreground 2
+    Foreground 1 \\ Foreground 2
+    --
+    Slow background job
+    sh -c 'sleep 0.1; echo Background' & \\ echo Foreground
+    Foreground \\ Background
+    --
+    Input redirection
+    sh -c 'echo Hello >_test_' \\ tr a-z A-Z <_test_
+    HELLO
+    --
+    Output redirection
+    echo "Hello" >_test_ \\ echo "Goodbye" >_test_ \\ cat _test_
+    Goodbye
+    --
+    Output redirection appending
+    sh -c 'echo Hello >_test_' \\ echo "Goodbye" >>_test_ \\ cat _test_
+    Hello \\ Goodbye
+    --
+    Single pipe
+    echo "Hello" | rev
+    olleH
+    --
+    Multiple pipes
+    echo "Hello" | rev | tr a-z A-Z
+    OLLEH
+    --
+    Pipeline with input redirection
+    sh -c 'printf "sert\nsod\nnu\n" >_test_' \\ tr a-z A-Z <_test_ | rev | tac
+    UN \\ DOS \\ TRES
+    --
+    Pipeline with output redirection
+    echo "Hello" | rev | tr a-z A-Z >_test_ \\ sed 's/\(.*\)/(\1)/' _test_
+    (OLLEH)
+    --
+    Pipeline ignoring first
+    sh -c 'echo oaic >_test_' \\ echo "onroignouB" | rev <_test_ | tr a-z A-Z
+    CIAO
+    --
+    Pipeline ignoring last
+    echo "onroignouB" | rev >_test_ | tr a-z A-Z \\ cat _test_
+    Buongiorno
+    --
+    Slow foreground pipeline
+    sh -c 'sleep 0.1; echo Foreground 1' | cat \\ echo Foreground 2
+    Foreground 1 \\ Foreground 2
+    --
+    Slow background pipeline
+    sh -c 'sleep 0.1; echo Background' | cat & \\ echo Foreground
+    Foreground \\ Background
+    --
+EOF
+
+# Tests based on shell exit status
+while read title && read -r shellInput && read expExit; do
+    read separator # ignored
+    shellInput="$(printu "$shellInput" | splitlines)"
+    printu "$shellInput" | timeout -s KILL $maxtime $* >/dev/null 2>&1
+    actExit="$?"
+    if ! expr "$actExit" : "$expExit" >/dev/null; then
+        failed=$(($failed + 1))
+        printf "${bold}${yellow}== Test $(($failed + $passed)) ($title): "
+        printf "${bold}${red}failed\n"
+        printf "${normal}${yellow}-- Shell input\n"
+        printf "${normal}%s\n" "$shellInput"
+        printf "${normal}${yellow}-- Expected exit status (regex pattern)\n"
+        printf "${normal}%s\n" "$expExit"
+        printf "${normal}${yellow}-- Actual exit status\n"
+        printf "${normal}%s\n" "$actExit"
+    else
+        passed=$(($passed + 1))
+    fi
+done <<'EOF' # each test: (1) title, (2) shell input, (3) expected exit status, (4) --
+    Exit with given value
+    exit 42
+    42
+    --
+    Exit with status of last simple command
+    sh -c 'exit 42' \\ exit
+    42
+    --
+    Exit with status of last pipeline
+    sh -c 'exit 40' | sh -c 'exit 41' | sh -c 'exit 42' \\ exit
+    42
+    --
+    Exit with status of builtin
+    cd /__nonexistent_directory__ \\ exit
+    [^0]
+    --
+    Exit with status of killed command
+    sh -c 'kill -KILL $$' \\ exit
+    137
+    --
+EOF
+
+printf "${bold}${yellow}== TEST RESULT ==\n"
+printf "${bold}${red}$failed failed"
+printf "${normal} / "
+printf "${bold}${green}$passed passed\n"
+printf "${normal}"
+
+# Clean up
+rm -f _test_ _testok_ _testprog_
+pkill -KILL _testprog_
+
+exit 0
