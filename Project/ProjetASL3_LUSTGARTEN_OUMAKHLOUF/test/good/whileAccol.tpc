@@ -1,8 +1,0 @@
-int main(void) {
-    int i, j;
-    i = 5;
-    j = 0;
-    while (i == 5) {
-        j = j+1;
-    }
-}

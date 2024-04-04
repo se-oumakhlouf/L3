@@ -1,7 +1,0 @@
-char bidule(char c) {
-    return c;
-}
-
-int main(void) {
-    return 0;
-}
