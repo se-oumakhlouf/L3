@@ -1,8 +1,0 @@
-int main(void) {
-    
-    char baba;
-    char keke;
-
-    return 0;
-
-}

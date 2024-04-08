@@ -1,7 +1,0 @@
-int main(void) {
-    int j;
-    int i;
-    i= 5;
-    j =0;
-    while (i == 5) j = j+1;
-}

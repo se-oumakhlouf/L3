@@ -1,9 +1,0 @@
-void une_fonction(int a, int b) {
-    int c;
-    c = a + b;
-}
-
-int main(void){
-
-    return 0;
-}

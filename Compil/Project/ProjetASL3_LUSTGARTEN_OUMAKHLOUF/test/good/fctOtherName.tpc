@@ -1,7 +1,0 @@
-int _double42 (int a) {
-    return a * 2;
-}
-
-int main(void) {
-    return 0;
-}

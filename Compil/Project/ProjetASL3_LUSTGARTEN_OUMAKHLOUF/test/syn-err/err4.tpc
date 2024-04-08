@@ -1,5 +1,0 @@
-void oui(char a char b){ // error : missing ","
-    return;
-}
-
-int main(void) {}

@@ -1,8 +1,0 @@
-int main(void) {
-    
-    int ceci_est_un_int;
-    int x;
-    
-    return 0;
-
-}
