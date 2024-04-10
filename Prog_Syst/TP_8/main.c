@@ -50,13 +50,6 @@ int builtinEXIT(int argc, char ** argv) {
     exit(EXIT_FAILURE);
 }
 
-int isEXIT(Job * job) {
-  if (!strcmp(job->pipeline->head->args->array[0], "exit")){
-    return 1;
-  }
-  return 0; 
-}
-
 int main(void) {
   int wstatus;
   while (true) {
