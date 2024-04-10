@@ -2,7 +2,7 @@ CC=gcc
 LEX=flex
 YACC=bison
 CFLAGS=-c -Wall -Wextra -g
-LDFLAGS=-Wall -Wextra -g -ll -ly
+LDFLAGS=-Wall -Wextra -g -ll # -ly
 EXEC=mysh
 
 $(EXEC): main.o joblist.o lexer.o parser.o
