@@ -40,7 +40,8 @@ void builtinEXIT(int argc, char ** argv) {
 }
 
 int main(void) {
-	int wstatus, fd;
+	int wstatus, fd, p[2], process_count, ended;
+	try(pipe(p));
 	while (true) {
 		char *line = readCmdLine();
 		if (!line) {
@@ -49,6 +50,7 @@ int main(void) {
 		Job *job = newJobFromCmdLine(line);
 		if (job) {
 			// printJob(job);
+			process_count = 0; ended = 0;
 			
 			if (!strcmp(job->pipeline->head->args->array[0], "cd"))
 				builtinCD(job->pipeline->head->args->size, job->pipeline->head->args->array);
@@ -57,37 +59,62 @@ int main(void) {
 				builtinEXIT(job->pipeline->head->args->size, job->pipeline->head->args->array);
 			
 			else {
-				switch (try(fork(), -1)) {
 
-					case 0: /* child */
+				for (Proc *proc = job->pipeline->head; proc != NULL; proc = proc->next) {
+					process_count++;
+				}
+				printf("process_count : %d\n", process_count);
+				int pipes[process_count - 1][2];
+				for (int i = 0; i < process_count - 1; i++) {
+                    try(pipe(pipes[i]));
+                }
 
-						if (job->pipeline->head->redout) { /* > */
-							if (job->pipeline->head->append) fd = try(open(job->pipeline->head->redout, O_WRONLY | O_CREAT | O_APPEND, 0666));
-							else fd = try(open(job->pipeline->head->redout, O_WRONLY | O_CREAT | O_TRUNC, 0666));
-							try(dup2(fd, STDOUT_FILENO));
-							try(dup2(fd, STDERR_FILENO));
-							try(close(fd));
-						}
+				for (int i = 0; i < process_count; i++) {
+					switch (try(fork(), -1)) {
 
-						if (job->pipeline->head->redin) { /* < */
-							fd = try(open(job->pipeline->head->redin, O_RDONLY));
-							try(dup2(fd, STDIN_FILENO));
-							try(dup2(fd, STDERR_FILENO));
-							try(close(fd));
-						}
+						case 0: /* child */
+
+							// Gestion des redirections d'entrée et de sortie pour chaque processus
+							if (job->pipeline->head->redout) { /* > */
+								if (job->pipeline->head->append) fd = try(open(job->pipeline->head->redout, O_WRONLY | O_CREAT | O_APPEND, 0666));
+								else fd = try(open(job->pipeline->head->redout, O_WRONLY | O_CREAT | O_TRUNC, 0666));
+								try(dup2(fd, STDOUT_FILENO));
+								try(dup2(fd, STDERR_FILENO));
+								try(close(fd));
+							}
+
+							if (job->pipeline->head->redin) { /* < */
+								fd = try(open(job->pipeline->head->redin, O_RDONLY));
+								try(dup2(fd, STDIN_FILENO));
+								try(dup2(fd, STDERR_FILENO));
+								try(close(fd));
+							}
+
+							// Gestion des tubes pour rediriger l'entrée et la sortie
+							if (i < process_count - 1) { /* sortie standard vers le tube */
+								try(close(pipes[i][0]));
+								try(dup2(pipes[i][1], STDOUT_FILENO));
+								try(close(pipes[i][1]));
+							}
+
+							if (i > 0) { /* entrée standard depuis le tube */
+								try(close(pipes[i - 1][1]));
+								try(dup2(pipes[i - 1][0], STDIN_FILENO));
+								try(close(pipes[i - 1][0]));
+							}
+
+							try(execvp(job->pipeline->head->args->array[0], job->pipeline->head->args->array));
+							break;
 						
-						try(execvp(job->pipeline->head->args->array[0], job->pipeline->head->args->array));
-						break;
-					
-					default: /* parent */
-
-						if (!job->bg) try(wait(&wstatus)); // &
-						if (WIFEXITED(wstatus)) return_code = WEXITSTATUS(wstatus);
-						else if(WIFSIGNALED(wstatus)) return_code = 128 + WTERMSIG(wstatus);
-						break;
+						default: /* parent */
+							printf("parent, process_count : %d\n", process_count);
+							if (!job->bg) try(wait(&wstatus)); // &
+							if (WIFEXITED(wstatus)) return_code = WEXITSTATUS(wstatus);
+							else if (WIFSIGNALED(wstatus)) return_code = 128 + WTERMSIG(wstatus);
+							break;
+					}
 				}
 			}
-			
 			delJob(job);
 		}
 	}
