@@ -53,3 +53,27 @@ fromRA (RAList { getDigits = [] }) = []
 fromRA (RAList { getDigits = (Zero : xs) }) = fromRA (RAList { getDigits = xs })
 fromRA (RAList { getDigits = (One t : xs) }) = fromT t ++ fromRA (RAList { getDigits = xs })
 
+-- mkRA_ABCDEF
+-- -> RA{["ABDCE"]}
+-- -> RA{["A", "", "BCDE"]}
+instance Show a => Show (RAList a) where
+    show (RAList { getDigits = a }) = "-> RA{" ++ show (fromRA (RAList { getDigits = a })) ++ "}" ++ "\n" ++ "-> RA{" ++ show (showFull (RAList { getDigits = a })) ++ "}"
+
+showFull :: RAList a -> [[a]]
+showFull (RAList { getDigits = [] }) = []
+showFull (RAList { getDigits = (Zero : xs) }) = [] : showFull (RAList {getDigits = xs })
+showFull (RAList { getDigits = (One t : xs) }) = fromT t : showFull (RAList { getDigits = xs })
+
+headRA' :: RAList a -> Maybe a
+headRA' (RAList { getDigits = [] }) = Nothing
+headRA' (RAList { getDigits = (Zero : xs) }) = headRA' (RAList { getDigits = xs })
+headRA' (RAList { getDigits = (One t : xs) }) = Just (head (fromT t))
+
+consRA :: a -> RAList a -> RAList a
+consRA x (RAList { getDigits = digits }) = (RAList { getDigits = consT (Leaf x) digits })
+
+consT :: Tree a -> [Digit a] -> [Digit a]
+consT t [] = [One t]
+consT t (Zero : xs) = One t : xs
+consT l1@(Leaf x) (One l2@(Leaf y) : xs) =  Zero : consT (Node 2 l1 l2) xs
+consT t1 (One t2 : xs) = consT (mkNodeT t1 t2) xs
