@@ -40,7 +40,10 @@ void builtinEXIT(int argc, char ** argv) {
 }
 
 int main(void) {
-	int wstatus, fd, prev_p, next_p[2], process_count = 0;
+	int wstatus, fd, prev_p, next_p[2];
+	pid_t lastPID;
+	bool isFirstCmd = 0;
+	bool isLastCmd = 0;
 	try(pipe(next_p));
 
 	while (true) {
@@ -61,15 +64,12 @@ int main(void) {
 			else {
 
 				for (Proc *proc = job->pipeline->head; proc != NULL; proc = proc->next) {
-					process_count++;
-				}
 
-				for (int i = 0; i < process_count; i++) {
-					bool isFirstCmd = (i == 0);
-					bool isLastCmd = (i == process_count - 1);
+					isFirstCmd = job->pipeline->head == proc ? 1 : 0;
+					isLastCmd = job->pipeline->tail == proc ? 1 : 0;
 					if (!isLastCmd) try(pipe(next_p));
-
-					switch (try(fork())) {
+					
+					switch (lastPID = try(fork())) {
 
 						case 0: /* child */
 
@@ -110,7 +110,7 @@ int main(void) {
 					}
 				}
 				/* parent (waits for last command) */
-				if (!job->bg) try(wait(&wstatus)); // &
+				if (!job->bg) try(waitpid(lastPID, &wstatus, 0)); // &
 				if (WIFEXITED(wstatus)) return_code = WEXITSTATUS(wstatus);
 				else if (WIFSIGNALED(wstatus)) return_code = 128 + WTERMSIG(wstatus);
 			}
